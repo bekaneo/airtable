@@ -6,7 +6,6 @@ class Airtable(FieldsMixin, ReadMixin, CreateMixin, UpdateMixin, DeleteMixin):
 
 
 cars = Airtable()
-
 commands = {'create': cars.create, 
             'update': cars.update, 
             'list': cars.list, 
@@ -30,9 +29,13 @@ while True:
     if command in commands:
         if command in ['create', 'len']:
             commands[command]()
-        if command in 'list':
+        elif command in 'list':
             print(commands[command](input('Enter number of rows or leave blanc to: ')))
-        if command in ['delete', 'update']:
+        elif command in ['delete', 'update']:
+            cars.list_of_id()
             commands[command](input('Enter id: '))
-        if command in 'retrive':
+        elif command in 'retrive':
+            cars.list_of_id()
             print(commands[command](input('Enter id: ')))
+        else:
+            print('unknow command')

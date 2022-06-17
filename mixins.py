@@ -6,8 +6,19 @@ from settings import settings
 class FieldsMixin:
     car_types = ['sedan', 'hatchback', 'univarsal',
                  'coupe', 'minivan', 'suv', 'pickup']
-
+    def list_of_id(self):
+        records = self.list()['records']
+        ids = []
+        brand = []
+        model = []
+        for i in range(len(records)):
+            ids.append(records[i]['id'])
+            brand.append(records[i]['fields']['brand'])
+            model.append(records[i]['fields']['model'])
+        zipped = tuple(zip(ids, brand, model))
+        print(zipped)
     def check_id(self, id_):
+        print('[CHECKING ID...]')
         data = requests.get(f'{settings.get_url}/{id_}',
                             headers=settings.HEADERS).json()
         return True if data.get('error') != 'NOT_FOUND' else False
@@ -119,24 +130,23 @@ class ReadMixin:
     def list(self, records: int = None) -> str:
         max_records = '?maxRecords='
         if not records:
-            print('[PROCESSING...]')
+            print('[REQUESTING...]')
             cars = requests.get(settings.get_url, headers=settings.HEADERS)
         else:
-            print('[PROCESSING...]')
+            print('[REQUESTING...]')
             cars = requests.get(
                 f'{settings.get_url}{max_records}{records}', headers=settings.HEADERS)
         return cars.json()
 
     def retrive(self, id_):
-        print('[PROCESSING...]')
+        print('[RETIRVING...]')
         if self.check_id(id_):
-            print('[PROCESSING...]')
+            print('[REQUESTING...]')
             car = requests.get(f'{settings.get_url}/{id_}',
                                headers=settings.HEADERS)
             return car.json()
         else:
-            print(f'Not found this id')
-
+            print('[NOT FOUND ID]')
 
 class CreateMixin():
 
@@ -154,22 +164,23 @@ class UpdateMixin:
         print('[PROCESSING...]')
         if self.check_id(id_):
             data = self.validate(id_)
-            print('[PROCESSING...]')
+            print('[REQUESTING...]')
             request = requests.patch(
                 url=f'{settings.get_url}/{id_}', headers=settings.HEADERS, data=data)
             print('Successefully updated!')
             return request.json()
         else:
-            print(f'Not found this id')
+            print('[NOT FOUND ID]')
 
 
 class DeleteMixin:
     def delete(self, id_):
         if self.check_id(id_):
-            print('[PROCESSING...]')
+            print('[FOUND ID]')
+            print('[DELETING...]')
             request = requests.delete(
                 f'{settings.get_url}/{id_}', headers=settings.HEADERS)
             print('Successefully deleted!')
             return request.json()
         else:
-            print(f'Not found this id')
+            print('[NOT FOUND ID]')
