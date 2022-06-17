@@ -11,12 +11,15 @@ class FieldsMixin:
         ids = []
         brand = []
         model = []
+        result = {}
         for i in range(len(records)):
             ids.append(records[i]['id'])
             brand.append(records[i]['fields']['brand'])
             model.append(records[i]['fields']['model'])
         zipped = tuple(zip(ids, brand, model))
-        print(zipped)
+        for i in range(len(zipped)):
+            result[i] = {'id': ids[i], 'brand': brand[i], 'model': model[i]}
+        print(result)
     def check_id(self, id_):
         print('[CHECKING ID...]')
         data = requests.get(f'{settings.get_url}/{id_}',
