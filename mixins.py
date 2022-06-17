@@ -45,7 +45,7 @@ class FieldsMixin:
         if not id_:
             print('[PROCESSING...]')
             fields = self.fields
-            print(f'You shoud enter these fields: {", ".join(fields)}')
+            print(f'You should enter these fields: {", ".join(fields)}')
             record = {}
             for field in fields:
                 if field == 'type':
