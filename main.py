@@ -12,7 +12,7 @@ commands = {'create': cars.create,
             'retrive': cars.retrive, 
             'update': cars.update, 
             'delete': cars.delete,
-            'len': cars.lenght
+            'lenght': cars.lenght
             }
 while True:
     command = input('Enter command or help: ').lower()
@@ -27,7 +27,7 @@ while True:
               lenght - lenght of table
               ''')
     if command in commands:
-        if command in ['create', 'len']:
+        if command in ['create', 'lenght']:
             commands[command]()
         elif command in 'list':
             print(commands[command](input('Enter number of rows or leave blanc to: ')))

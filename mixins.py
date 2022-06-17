@@ -6,6 +6,7 @@ from settings import settings
 class FieldsMixin:
     car_types = ['sedan', 'hatchback', 'univarsal',
                  'coupe', 'minivan', 'suv', 'pickup']
+
     def list_of_id(self):
         records = self.list()['records']
         ids = []
@@ -20,6 +21,7 @@ class FieldsMixin:
         for i in range(len(zipped)):
             result[i] = {'id': ids[i], 'brand': brand[i], 'model': model[i]}
         print(result)
+
     def check_id(self, id_):
         print('[CHECKING ID...]')
         data = requests.get(f'{settings.get_url}/{id_}',
@@ -42,9 +44,8 @@ class FieldsMixin:
         if not id_:
             print('[PROCESSING...]')
             fields = self.fields
-            data = self.retrive('recxUzoQvw6VlSUfk')
-            record = data['fields']
             print(f'You shoud enter these fields: {", ".join(fields)}')
+            record = {}
             for field in fields:
                 if field == 'type':
                     while True:
@@ -59,8 +60,8 @@ class FieldsMixin:
                 if field in 'brand, model, color':
                     while True:
                         user_input = input(
-                            f'Enter {field.upper()} a string: ').lower()
-                        if user_input.isalpha() and user_input != '':
+                            f'Enter {field.upper()} a string: ').capitalize()
+                        if user_input.isalnum() and user_input != '':
                             record[field] = user_input
                             break
                         else:
@@ -69,7 +70,7 @@ class FieldsMixin:
                 if field in 'volume, mileage, year, price':
                     while True:
                         user_input = input(
-                            f'Enter {field.upper()} an integer: ').lower()
+                            f'Enter {field.upper()} an integer: ').capitalize()
                         if user_input.replace('.', '').isdigit() and user_input != '':
                             record[field] = user_input
                             break
@@ -95,6 +96,7 @@ class FieldsMixin:
                 if field in fields:
                     if field == 'type':
                         while True:
+                            print(f'Current value: {record[field]}')
                             user_input = input(
                                 f'Enter {field.upper()} {self.car_types}: ').lower()
                             if user_input in self.car_types and user_input != '':
@@ -105,9 +107,10 @@ class FieldsMixin:
                                     f'Enter valid {field.upper()} you entered {user_input}')
                     if field in 'brand, model, color':
                         while True:
+                            print(f'Current value: {record[field]}')
                             user_input = input(
                                 f'Enter {field.upper()} a string: ').lower()
-                            if user_input.isalpha() and user_input != '':
+                            if user_input.isalnum() and user_input != '':
                                 record[field] = user_input
                                 break
                             else:
@@ -115,6 +118,7 @@ class FieldsMixin:
                                     f'Enter valid {field.upper()} you entered {user_input}')
                     if field in 'volume, mileage, year, price':
                         while True:
+                            print(f'Current value: {record[field]}')
                             user_input = input(
                                 f'Enter {field.upper()} an integer: ').lower()
                             if user_input.replace('.', '').isdigit() and user_input != '':
@@ -151,6 +155,7 @@ class ReadMixin:
         else:
             print('[NOT FOUND ID]')
 
+
 class CreateMixin():
 
     def create(self):
@@ -165,15 +170,12 @@ class CreateMixin():
 class UpdateMixin:
     def update(self, id_):
         print('[PROCESSING...]')
-        if self.check_id(id_):
-            data = self.validate(id_)
-            print('[REQUESTING...]')
-            request = requests.patch(
-                url=f'{settings.get_url}/{id_}', headers=settings.HEADERS, data=data)
-            print('Successefully updated!')
-            return request.json()
-        else:
-            print('[NOT FOUND ID]')
+        data = self.validate(id_)
+        print('[REQUESTING...]')
+        request = requests.patch(
+            url=f'{settings.get_url}/{id_}', headers=settings.HEADERS, data=data)
+        print('Successefully updated!')
+        return request.json()
 
 
 class DeleteMixin:
