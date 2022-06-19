@@ -155,7 +155,7 @@ class ReadMixin:
                                headers=settings.HEADERS)
             return car.json()
         else:
-            print('[NOT FOUND ID]')
+            return '[NOT FOUND ID]'
 
 
 class CreateMixin:
@@ -172,12 +172,15 @@ class CreateMixin:
 class UpdateMixin:
     def update(self, id_):
         print('[PROCESSING...]')
-        data = self.validate(id_)
-        print('[REQUESTING...]')
-        request = requests.patch(
-            url=f'{settings.get_url}/{id_}', headers=settings.HEADERS, data=data)
-        print('Successfully updated!')
-        return request.json()
+        if self.check_id(id_):
+            data = self.validate(id_)
+            print('[REQUESTING...]')
+            request = requests.patch(
+                url=f'{settings.get_url}/{id_}', headers=settings.HEADERS, data=data)
+            print('Successfully updated!')
+            return request.json()
+        else:
+            print('[NOT FOUND ID]')
 
 
 class DeleteMixin:
